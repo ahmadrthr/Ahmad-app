@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ahmad App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: black;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+    video {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .page {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0; left: 100%;
+      background: #111;
+      transition: left 0.3s ease;
+      z-index: 1;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .page.active {
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <video id="camera" autoplay muted playsinline></video>
+
+  <!-- Messages Page -->
+  <div id="messages" class="page">
+    <h2>Messages</h2>
+    <p>DMs and group chats will go here</p>
+  </div>
+
+  <!-- Feed Page -->
+  <div id="feed" class="page">
+    <h2>Feed</h2>
+    <p>This is your blank feed for now.</p>
+  </div>
+
+  <script>
+    // Camera setup
+    navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+      .then(stream => {
+        document.getElementById("camera").srcObject = stream;
+      })
+      .catch(err => {
+        console.error("Camera access error:", err);
+      });
+
+    // Swipe gesture nav
+    let startX = 0;
+    document.body.addEventListener('touchstart', e => {
+      startX = e.touches[0].clientX;
+    });
+
+    document.body.addEventListener('touchend', e => {
+      const endX = e.changedTouches[0].clientX;
+      const diff = endX - startX;
+
+      if (diff < -50) {
+        document.getElementById('messages').classList.add('active');
+        document.getElementById('feed').classList.remove('active');
+      } else if (diff > 50) {
+        document.getElementById('feed').classList.add('active');
+        document.getElementById('messages').classList.remove('active');
+      }
+    });
+  </script>
+</body>
+</html>
